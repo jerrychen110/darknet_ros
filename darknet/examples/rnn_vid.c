@@ -1,7 +1,7 @@
 #include "darknet.h"
 
 #ifdef OPENCV
-image get_image_from_stream(void *cap);
+image get_image_from_stream(CvCapture *cap);
 image ipl_to_image(IplImage* src);
 
 void reconstruct_picture(network net, float *features, image recon, image update, float rate, float momentum, float lambda, int smooth_size, int iters);
@@ -24,7 +24,7 @@ float_pair get_rnn_vid_data(network net, char **files, int n, int batch, int ste
         int input_size = net.w*net.h*net.c;
         float *input = calloc(input_size*net.batch, sizeof(float));
         char *filename = files[rand()%n];
-        void *cap = cvCaptureFromFile(filename);
+        CvCapture *cap = cvCaptureFromFile(filename);
         int frames = cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_COUNT);
         int index = rand() % (frames - steps - 2);
         if (frames < (steps + 4)){
@@ -157,7 +157,7 @@ void generate_vid_rnn(char *cfgfile, char *weightfile)
     set_batch_network(&net, 1);
 
     int i;
-    void *cap = cvCaptureFromFile("/extra/vid/ILSVRC2015/Data/VID/snippets/val/ILSVRC2015_val_00007030.mp4");
+    CvCapture *cap = cvCaptureFromFile("/extra/vid/ILSVRC2015/Data/VID/snippets/val/ILSVRC2015_val_00007030.mp4");
     float *feat;
     float *next;
     image last;

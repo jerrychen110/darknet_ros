@@ -114,8 +114,8 @@ void test_writing(char *cfgfile, char *weightfile, char *filename)
         image thresh = threshold_image(upsampled, .5);
         pred = thresh;
 
-        show_image(pred, "prediction", 1);
-        show_image(im, "orig", 1);
+        show_image(pred, "prediction");
+        show_image(im, "orig");
 #ifdef OPENCV
         cvWaitKey(0);
         cvDestroyAllWindows();

@@ -7,8 +7,8 @@ void extract_voxel(char *lfile, char *rfile, char *prefix)
     int h = 1080;
     int shift = 0;
     int count = 0;
-    void *lcap = cvCaptureFromFile(lfile);
-    void *rcap = cvCaptureFromFile(rfile);
+    CvCapture *lcap = cvCaptureFromFile(lfile);
+    CvCapture *rcap = cvCaptureFromFile(rfile);
     while(1){
         image l = get_image_from_stream(lcap);
         image r = get_image_from_stream(rcap);

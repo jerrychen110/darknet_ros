@@ -25,31 +25,13 @@ IplImage *image_to_ipl(image im)
     return disp;
 }
 
-// image ipl_to_image(IplImage* src)
-// {
-//     int h = src->height;
-//     int w = src->width;
-//     int c = src->nChannels;
-//     image im = make_image(w, h, c);
-//     unsigned char *data = (unsigned char *)src->imageData;
-//     int step = src->widthStep;
-//     int i, j, k;
-
-//     for(i = 0; i < h; ++i){
-//         for(k= 0; k < c; ++k){
-//             for(j = 0; j < w; ++j){
-//                 im.data[k*w*h + i*w + j] = data[i*step + j*c + k]/255.;
-//             }
-//         }
-//     }
-//     return im;
-// }
-void ipl_into_image(IplImage* src, image im)
+image ipl_to_image(IplImage* src)
 {
-    unsigned char *data = (unsigned char *)src->imageData;
     int h = src->height;
     int w = src->width;
     int c = src->nChannels;
+    image im = make_image(w, h, c);
+    unsigned char *data = (unsigned char *)src->imageData;
     int step = src->widthStep;
     int i, j, k;
 
@@ -60,16 +42,7 @@ void ipl_into_image(IplImage* src, image im)
             }
         }
     }
-}
-
-image ipl_to_image(IplImage* src)
-{
-    int h = src->height;
-    int w = src->width;
-    int c = src->nChannels;
-    image out = make_image(w, h, c);
-    ipl_into_image(src, out);
-    return out;
+    return im;
 }
 
 Mat image_to_mat(image im)
@@ -114,31 +87,8 @@ image get_image_from_stream(void *p)
     return mat_to_image(m);
 }
 
-// image load_image_cv(char *filename, int channels)
-// {
-//     int flag = -1;
-//     if (channels == 0) flag = -1;
-//     else if (channels == 1) flag = 0;
-//     else if (channels == 3) flag = 1;
-//     else {
-//         fprintf(stderr, "OpenCV can't force load with %d channels\n", channels);
-//     }
-//     Mat m;
-//     m = imread(filename, flag);
-//     if(!m.data){
-//         fprintf(stderr, "Cannot load image \"%s\"\n", filename);
-//         char buff[256];
-//         sprintf(buff, "echo %s >> bad.list", filename);
-//         system(buff);
-//         return make_image(10,10,3);
-//         //exit(0);
-//     }
-//     image im = mat_to_image(m);
-//     return im;
-// }
 image load_image_cv(char *filename, int channels)
 {
-    IplImage* src = 0;
     int flag = -1;
     if (channels == 0) flag = -1;
     else if (channels == 1) flag = 0;
@@ -146,9 +96,9 @@ image load_image_cv(char *filename, int channels)
     else {
         fprintf(stderr, "OpenCV can't force load with %d channels\n", channels);
     }
-
-    if( (src = cvLoadImage(filename, flag)) == 0 )
-    {
+    Mat m;
+    m = imread(filename, flag);
+    if(!m.data){
         fprintf(stderr, "Cannot load image \"%s\"\n", filename);
         char buff[256];
         sprintf(buff, "echo %s >> bad.list", filename);
@@ -156,11 +106,10 @@ image load_image_cv(char *filename, int channels)
         return make_image(10,10,3);
         //exit(0);
     }
-    image out = ipl_to_image(src);
-    cvReleaseImage(&src);
-    rgbgr_image(out);
-    return out;
+    image im = mat_to_image(m);
+    return im;
 }
+
 int show_image_cv(image im, const char* name, int ms)
 {
     Mat m = image_to_mat(im);

@@ -608,15 +608,10 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         }
         else{
             save_image(im, "predictions");
-// #ifdef OPENCV
-//             cvNamedWindow("predictions", CV_WINDOW_NORMAL); 
-//             if(fullscreen){
-//                 cvSetWindowProperty("predictions", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
-//             }
-//             show_image(im, "predictions", 1);
-//             cvWaitKey(0);
-//             cvDestroyAllWindows();
-// #endif
+#ifdef OPENCV
+            make_window("predictions", 512, 512, 0);
+            show_image(im, "predictions", 0);
+#endif
         }
 
         free_image(im);

@@ -155,21 +155,13 @@ void demo_regressor(char *datacfg, char *cfgfile, char *weightfile, int cam_inde
     set_batch_network(net, 1);
 
     srand(2222222);
-    void * cap;
-
-    if(filename){
-        cap = open_video_stream(filename, 0, 0, 0, 0);
-    }else{
-        cap = open_video_stream(0, cam_index, 320, 240, 30);
-    }
     list *options = read_data_cfg(datacfg);
     int classes = option_find_int(options, "classes", 1);
     char *name_list = option_find_str(options, "names", 0);
     char **names = get_labels(name_list);
 
+    void * cap = open_video_stream(filename, cam_index, 0,0,0);
     if(!cap) error("Couldn't connect to webcam.\n");
-    // cvNamedWindow("Regressor", CV_WINDOW_NORMAL); 
-    // cvResizeWindow("Regressor", 512, 512);
     float fps = 0;
 
     while(1){
@@ -179,7 +171,6 @@ void demo_regressor(char *datacfg, char *cfgfile, char *weightfile, int cam_inde
         image in = get_image_from_stream(cap);
         image crop = center_crop_image(in, net->w, net->h);
         grayscale_image_3c(crop);
-        show_image(crop, "Regressor", 1);
 
         float *predictions = network_predict(net, crop.data);
 
@@ -192,10 +183,9 @@ void demo_regressor(char *datacfg, char *cfgfile, char *weightfile, int cam_inde
             printf("%s: %f\n", names[i], predictions[i]);
         }
 
+        show_image(crop, "Regressor", 10);
         free_image(in);
         free_image(crop);
-
-        // cvWaitKey(10);
 
         gettimeofday(&tval_after, NULL);
         timersub(&tval_after, &tval_before, &tval_result);

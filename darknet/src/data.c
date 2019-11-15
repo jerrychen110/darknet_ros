@@ -127,7 +127,7 @@ matrix load_image_augment_paths(char **paths, int n, int min, int max, int size,
         show_image(crop, "crop");
         cvWaitKey(0);
         */
-       //grayscale_image_3c(crop);
+        //grayscale_image_3c(crop);
         free_image(im);
         X.vals[i] = crop.data;
         X.cols = crop.h*crop.w*crop.c;
@@ -1294,7 +1294,7 @@ data *tile_data(data orig, int divs, int size)
 {
     data *ds = calloc(divs*divs, sizeof(data));
     int i, j;
-    #pragma omp parallel for
+#pragma omp parallel for
     for(i = 0; i < divs*divs; ++i){
         data d;
         d.shallow = 0;
@@ -1305,7 +1305,7 @@ data *tile_data(data orig, int divs, int size)
         d.X.vals = calloc(d.X.rows, sizeof(float*));
 
         d.y = copy_matrix(orig.y);
-        #pragma omp parallel for
+#pragma omp parallel for
         for(j = 0; j < orig.X.rows; ++j){
             int x = (i%divs) * orig.w / divs - (d.w - orig.w/divs)/2;
             int y = (i/divs) * orig.h / divs - (d.h - orig.h/divs)/2;
@@ -1329,7 +1329,7 @@ data resize_data(data orig, int w, int h)
     d.X.vals = calloc(d.X.rows, sizeof(float*));
 
     d.y = copy_matrix(orig.y);
-    #pragma omp parallel for
+#pragma omp parallel for
     for(i = 0; i < orig.X.rows; ++i){
         image im = float_to_image(orig.w, orig.h, 3, orig.X.vals[i]);
         d.X.vals[i] = resize_image(im, w, h).data;

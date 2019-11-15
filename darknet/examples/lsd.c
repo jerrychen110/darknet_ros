@@ -460,13 +460,9 @@ void inter_dcgan(char *cfgfile, char *weightfile)
         printf("%s: Predicted in %f seconds.\n", input, sec(clock()-time));
         //char buff[256];
         sprintf(buff, "out%05d", c);
-        show_image(out, "out", 1);
         save_image(out, "out");
         save_image(out, buff);
-#ifdef OPENCV
-        //cvWaitKey(0);
-#endif
-
+        show_image(out, "out", 0);
     }
 }
 
@@ -499,11 +495,8 @@ void test_dcgan(char *cfgfile, char *weightfile)
         //yuv_to_rgb(out);
         normalize_image(out);
         printf("%s: Predicted in %f seconds.\n", input, sec(clock()-time));
-        show_image(out, "out", 1);
         save_image(out, "out");
-#ifdef OPENCV
-        cvWaitKey(0);
-#endif
+        show_image(out, "out", 0);
 
         free_image(im);
     }
@@ -643,7 +636,6 @@ void train_prog(char *cfg, char *weight, char *acfg, char *aweight, int clear, i
             show_image(im2, "train", 1);
             save_image(im, "gen");
             save_image(im2, "train");
-            cvWaitKey(1);
         }
 #endif
 
@@ -830,7 +822,6 @@ void train_dcgan(char *cfg, char *weight, char *acfg, char *aweight, int clear, 
             show_image(im2, "train", 1);
             save_image(im, "gen");
             save_image(im2, "train");
-            cvWaitKey(1);
         }
 #endif
 
@@ -1012,7 +1003,6 @@ void train_colorizer(char *cfg, char *weight, char *acfg, char *aweight, int cle
             image im2 = float_to_image(anet->w, anet->h, anet->c, train.X.vals[0]);
             show_image(im, "gen", 1);
             show_image(im2, "train", 1);
-            cvWaitKey(1);
         }
 #endif
         free_data(merge);
@@ -1342,12 +1332,9 @@ void test_lsd(char *cfg, char *weights, char *filename, int gray)
         //yuv_to_rgb(out);
         constrain_image(out);
         printf("%s: Predicted in %f seconds.\n", input, sec(clock()-time));
-        show_image(out, "out", 1);
-        show_image(crop, "crop", 1);
         save_image(out, "out");
-#ifdef OPENCV
-        cvWaitKey(0);
-#endif
+        show_image(out, "out", 1);
+        show_image(crop, "crop", 0);
 
         free_image(im);
         free_image(resized);
